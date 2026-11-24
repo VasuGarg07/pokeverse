@@ -45,9 +45,12 @@ html, body {
   isolation: isolate;
 }
 
-:focus-visible {
-  outline: 3px solid #D00000;
-  outline-offset: 3px;
+:focus-visible,
+sakuga-button::part(button),
+pv-link-tip::part(button),
+sakuga-slider::part(slider),
+sakuga-input::part(input) {
+  outline: none !important;
 }
 
 sakuga-button::part(button) {
@@ -328,6 +331,81 @@ sakuga-slider {
 
 .region-panel:last-child {
   --cut: polygon(20px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.versus {
+  --tilt: 26px;
+  position: relative;
+  display: grid;
+}
+
+.versus-left {
+  --cut: polygon(0 0, 100% 0, 100% calc(100% - var(--tilt)), 0 100%);
+}
+
+.versus-right {
+  --cut: polygon(0 var(--tilt), 100% 0, 100% 100%, 0 100%);
+  margin-top: calc(8px - var(--tilt));
+}
+
+.versus-mark {
+  position: absolute;
+  left: 62%;
+  top: 50%;
+  translate: -50% -40%;
+  rotate: -6deg;
+  font-size: 4rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .versus {
+    --lean: 80px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .versus-left {
+    --cut: polygon(0 0, 100% 0, calc(100% - var(--lean)) 100%, 0 100%);
+    margin-right: calc(5px - var(--lean) / 2);
+  }
+
+  .versus-right {
+    --cut: polygon(var(--lean) 0, 100% 0, 100% 100%, 0 100%);
+    margin-left: calc(5px - var(--lean) / 2);
+    margin-top: 0;
+  }
+
+  .versus-mark {
+    left: 50%;
+    top: 42%;
+    translate: -50% -50%;
+    font-size: clamp(5rem, 10vw, 8rem);
+  }
+}
+
+.pick-panel {
+  --cut: polygon(var(--l, 16px) 0, 100% 0, calc(100% - var(--r, 16px)) 100%, 0 100%);
+  margin-left: min(0px, calc(2px - var(--l, 16px) / 2));
+  margin-right: min(0px, calc(2px - var(--r, 16px) / 2));
+  transition: flex-grow 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.pick-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--pick);
+  translate: 0 68%;
+  transition: translate 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.pick-panel:hover .pick-fill,
+.pick-panel:focus-visible .pick-fill {
+  translate: 0 45%;
+}
+
+.pick-panel[aria-pressed="true"] .pick-fill {
+  translate: 0;
 }
 
 @keyframes bar-in {

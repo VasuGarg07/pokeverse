@@ -12,6 +12,7 @@ Pokéverse is printed like a weekly manga magazine: ink on tinted newsprint, pan
 
 - **Pokédex:** the paper takes the colour of the chosen region. Regions are slanted panels; the chosen one opens wide. The first card is a splash panel, and art slightly breaks its frame.
 - **Details:** the paper takes the Pokémon's type colour. Pressing the art plays an effect for its type (`src/lib/typeEffects.ts`). Pokédex entries are speech bubbles, and facts are ink grids.
+- **Battle setup:** Player 1 (crimson) against Player 2 (cobalt) in slanted panels, the team size is shown in Poké Balls, and a picked difficulty or region fills with its colour. Picked regions get a Poké Ball, like a caught Pokémon.
 - **Header:** the two sections are slanted panels that bleed off the corner and fill with their colour on hover and when active.
 
 ## Effect levels

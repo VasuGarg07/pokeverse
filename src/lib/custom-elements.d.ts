@@ -8,7 +8,7 @@ declare module 'react' {
             'sakuga-button': SakugaElement<{ variant?: 'secondary' }>;
             'sakuga-input': SakugaElement<{ class?: string; type?: string; label?: string; placeholder?: string }>;
             'pv-link-tip': SakugaElement<{ href: string; text: string; label: string }>;
-            'sakuga-slider': SakugaElement<{ label?: string; min?: number; max?: number; step?: number; unit?: string }>;
+            'sakuga-slider': SakugaElement<{ label?: string; value?: number; min?: number; max?: number; step?: number; unit?: string }>;
         }
     }
 }

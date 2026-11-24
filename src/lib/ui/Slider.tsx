@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-
 type SliderElement = HTMLElement & { value: string };
 
 interface SliderProps {
@@ -12,17 +10,11 @@ interface SliderProps {
 }
 
 export function Slider({ label, value, min, max, step = 1, onChange }: SliderProps) {
-    const slider = useRef<SliderElement>(null);
-
-    useEffect(() => {
-        if (slider.current!.value !== String(value)) slider.current!.value = String(value);
-    }, [value]);
-
     return (
         <div>
             <p className="text-sm font-bold text-shadow">{label}</p>
             <sakuga-slider
-                ref={slider}
+                value={value}
                 label={label}
                 min={min}
                 max={max}

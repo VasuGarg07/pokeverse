@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { Button, useModal } from '../lib/ui';
 import { resetBattle } from '../store/battleSlice';
 import { useAppDispatch, useAppSelector } from '../store/useRedux';
@@ -6,13 +7,16 @@ interface ContinueBattleDialogProps {
     onContinue: (path: string) => void;
 }
 
-const PHASES = ['SETUP', 'TEAM_SELECTION', 'BATTLE'] as const;
-const PHASE_LABELS: Record<string, string> = {
-    SETUP: 'Setup',
-    TEAM_SELECTION: 'Teams',
-    BATTLE: 'Battle',
-    ENDED: 'Battle',
+const STEPS = ['Setup', 'Teams', 'Battle'];
+
+const STEP_OF_PHASE: Record<string, number> = {
+    SETUP: 0, TEAM_SELECTION: 1, LOADING: 1, BATTLE: 2, ENDED: 2,
 };
+
+const SIDES = [
+    { panel: 'versus-left', sheet: 'bg-crimson pb-13 md:pb-3 md:pr-18' },
+    { panel: 'versus-right', sheet: 'bg-cobalt pt-10 md:pt-3 md:pl-18 text-right' },
+];
 
 export default function ContinueBattleDialog({ onContinue }: ContinueBattleDialogProps) {
     const dispatch = useAppDispatch();
@@ -32,68 +36,48 @@ export default function ContinueBattleDialog({ onContinue }: ContinueBattleDialo
     const handleContinue = () => { close(); onContinue(getNavigationPath()); };
     const handleNewBattle = () => { close(); dispatch(resetBattle()); onContinue('/battle-sim'); };
 
-    const phaseMap: Record<string, number> = {
-        SETUP: 0, TEAM_SELECTION: 1, LOADING: 1, BATTLE: 2, ENDED: 2,
-    };
-    const activeIndex = phaseMap[phase] ?? 0;
+    const activeStep = STEP_OF_PHASE[phase] ?? 0;
 
     return (
-        <div className="space-y-5">
-
-            <div className="flex items-center gap-4">
-                <img src="/pikachu.png" alt="Pikachu" className="w-20 h-20 object-contain shrink-0" />
-                <div>
-                    <p className="text-xs font-bold text-crimson uppercase tracking-widest mb-1">Battle in Progress</p>
-                    <h3 className="text-xl font-black text-shadow leading-tight">Continue where you left off?</h3>
-                    <p className="text-sm text-smoke mt-0.5">Your session is saved and ready</p>
-                </div>
+        <div>
+            <div className="speech px-5 py-4">
+                <h3 className="font-display text-xl leading-tight">Continue where you left off?</h3>
+                <p className="mt-1">Your session is saved and ready.</p>
             </div>
 
-            <div className="flex items-center">
-                {PHASES.map((p, i) => {
-                    const isDone = i < activeIndex;
-                    const isActive = i === activeIndex;
-                    return (
-                        <div key={p} className="flex items-center flex-1 last:flex-none">
-                            {/* Step */}
-                            <div className="flex flex-col items-center gap-1 shrink-0">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${isActive ? 'bg-crimson text-white shadow-sm shadow-crimson/40' : isDone ? 'bg-crimson/20 text-crimson' : 'bg-silver/20 text-silver/40'}`}>
-                                    {isDone ? '✓' : i + 1}
-                                </div>
-                                <span className={`text-[10px] font-bold ${isActive ? 'text-shadow' : isDone ? 'text-smoke' : 'text-silver/40'}`}>
-                                    {PHASE_LABELS[p]}
-                                </span>
-                            </div>
-                            {/* Connector — only between steps */}
-                            {i < PHASES.length - 1 && (
-                                <div className={`flex-1 h-px mx-2 ${isDone ? 'bg-crimson/40' : 'bg-silver/25'}`} />
-                            )}
-                        </div>
-                    );
-                })}
+            <div className="mt-5 flex items-end gap-3">
+                <img src="/pikachu.png" alt="" className="w-28 sm:w-36 -ml-2 shrink-0 animate-[pop-out_0.45s_ease-out]" />
+                <ol className="grow space-y-1 pb-2">
+                    {STEPS.map((step, index) => (
+                        <li
+                            key={step}
+                            aria-current={index === activeStep ? 'step' : undefined}
+                            className="slant slant-flow [--cut:polygon(12px_0,100%_0,calc(100%-12px)_100%,0_100%)]"
+                        >
+                            <span className={`sheet flex items-center gap-2 h-9 px-4 font-display text-sm ${index === activeStep ? 'bg-crimson text-white' : index < activeStep ? 'bg-shadow text-white' : 'bg-white text-smoke'}`}>
+                                {index < activeStep ? <Check className="w-4 h-4" strokeWidth={4} aria-label="Done" /> : index + 1}
+                                <span>{step}</span>
+                            </span>
+                        </li>
+                    ))}
+                </ol>
             </div>
 
-            <div className="rounded-xl border border-silver/40 bg-chalk overflow-hidden">
-                <div className="grid grid-cols-[1fr_auto_1fr]">
-                    <div className="p-4 text-left">
-                        <p className="text-[10px] font-bold text-azure uppercase tracking-wider mb-1">Player 1</p>
-                        <p className="font-black text-shadow text-sm truncate">{players[0].name || '—'}</p>
-                    </div>
-                    <div className="flex items-center justify-center px-3">
-                        <div className="w-9 h-9 rounded-full bg-shadow border-2 border-silver/20 flex items-center justify-center shadow-md">
-                            <span className="text-[10px] font-black text-white/70 tracking-widest">VS</span>
+            <div className="versus [--lean:36px]!">
+                {players.map(({ name }, index) => (
+                    <div key={index} className={`slant slant-flow ${SIDES[index].panel}`}>
+                        <div className={`sheet h-full px-4 py-3 text-white ${SIDES[index].sheet}`}>
+                            <p className="text-sm font-bold">Player {index + 1}</p>
+                            <p className="font-display text-lg leading-tight wrap-anywhere">{name || 'No name'}</p>
                         </div>
                     </div>
-                    <div className="p-4 text-right">
-                        <p className="text-[10px] font-bold text-crimson uppercase tracking-wider mb-1">Player 2</p>
-                        <p className="font-black text-shadow text-sm truncate">{players[1].name || '—'}</p>
-                    </div>
-                </div>
+                ))}
+                <span className="versus-mark lettering text-5xl! top-1/2!" aria-hidden="true">VS</span>
             </div>
 
-            <div className="flex gap-3">
-                <Button tone="paper" className="flex-1" onClick={handleNewBattle}>New Battle</Button>
-                <Button tone="crimson" className="flex-1" onClick={handleContinue}>Continue</Button>
+            <div className="mt-5 grid grid-cols-1 xs:grid-cols-2 gap-3">
+                <Button tone="paper" onClick={handleNewBattle}>New Battle</Button>
+                <Button tone="crimson" onClick={handleContinue}>Continue</Button>
             </div>
         </div>
     );
