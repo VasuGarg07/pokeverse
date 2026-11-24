@@ -1,7 +1,7 @@
-import { Activity, BookText, GitBranch, Images, Info, Shuffle, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { DETAIL_TABS } from '../helpers/constants';
+import { Tabs } from '../lib/ui';
 import { usePokemon } from '../hooks/usePokemon';
 import HeroSection from './HeroSection';
 import InfoSection from './InfoSection';
@@ -19,16 +19,6 @@ export default function PokemonDetails() {
 
     const { pokemon, isLoading, error } = usePokemon(pokemonId);
     const [activeTab, setActiveTab] = useState('info');
-
-    const tabIcons: Record<string, typeof Info> = {
-        info: Info,
-        entries: BookText,
-        moves: Zap,
-        stats: Activity,
-        evolution: GitBranch,
-        varieties: Shuffle,
-        gallery: Images,
-    };
 
     if (isLoading) {
         return (
@@ -65,29 +55,9 @@ export default function PokemonDetails() {
         <div className="flex-1 flex flex-col bg-chalk">
             <HeroSection pokemon={pokemon} />
 
-            {/* Tab bar — sticky below the app header (header is z-20, this is z-10) */}
-            <div className="sticky top-13 z-10 bg-white border-b border-silver/40 shadow-sm">
+            <div className="sticky top-14 z-10 bg-white border-y-3 border-shadow">
                 <div className="max-w-4xl mx-auto px-3">
-                    <div className="flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]">
-                        {DETAIL_TABS.map((tab) => {
-                            const Icon = tabIcons[tab.id];
-                            const isActive = activeTab === tab.id;
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center gap-1.5 px-3 py-3 text-sm font-semibold border-b-2 transition-all duration-200 whitespace-nowrap shrink-0 ${isActive
-                                        ? 'border-crimson text-crimson'
-                                        : 'border-transparent text-smoke hover:text-shadow hover:border-silver'
-                                        }`}
-                                >
-                                    <Icon className="w-4 h-4" />
-                                    <span className="hidden sm:inline">{tab.label}</span>
-                                    <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
+                    <Tabs label="Pokémon details" tabs={DETAIL_TABS} active={activeTab} onChange={setActiveTab} />
                 </div>
             </div>
 

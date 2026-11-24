@@ -31,6 +31,18 @@ export const REGIONS = [
     { name: 'Paldea', startId: 906, endId: 1015, generation: 'IX' },
 ] as const;
 
+export const REGION_COLORS: Record<string, string> = {
+    Kanto: '#F26A5A',
+    Johto: '#F2C14B',
+    Hoenn: '#5CC48B',
+    Sinnoh: '#7FA6E8',
+    Unova: '#B9B4BC',
+    Kalos: '#EF8FB4',
+    Alola: '#F59B45',
+    Galar: '#9D87D6',
+    Paldea: '#C9D65A',
+};
+
 export const TYPE_COLORS: Record<string, string> = {
     normal: '#A8A878',
     fighting: '#C03028',

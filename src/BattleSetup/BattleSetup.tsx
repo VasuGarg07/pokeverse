@@ -96,26 +96,22 @@ export default function BattleSetup() {
                 {/* Players */}
                 <Card label="Trainers">
                     <div className="grid grid-cols-1 xs:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <p className="text-xs font-black text-crimson uppercase tracking-wide">Player 1</p>
-                            <TextInput
-                                label=""
-                                value={player1Name}
-                                onChange={(e) => setPlayer1Name(e.target.value)}
-                                placeholder="Trainer name"
-                                error={errors.player1}
-                            />
-                        </div>
-                        <div className="space-y-1.5">
-                            <p className="text-xs font-black text-azure uppercase tracking-wide">Player 2</p>
-                            <TextInput
-                                label=""
-                                value={player2Name}
-                                onChange={(e) => setPlayer2Name(e.target.value)}
-                                placeholder="Trainer name"
-                                error={errors.player2}
-                            />
-                        </div>
+                        <TextInput
+                            label="Player 1"
+                            labelClassName="text-crimson"
+                            value={player1Name}
+                            onChange={(e) => setPlayer1Name(e.target.value)}
+                            placeholder="Trainer name"
+                            error={errors.player1}
+                        />
+                        <TextInput
+                            label="Player 2"
+                            labelClassName="text-cobalt"
+                            value={player2Name}
+                            onChange={(e) => setPlayer2Name(e.target.value)}
+                            placeholder="Trainer name"
+                            error={errors.player2}
+                        />
                     </div>
                 </Card>
 
@@ -202,14 +198,9 @@ export default function BattleSetup() {
                 </Card>
 
                 {/* CTA */}
-                <button
-                    onClick={handleStartBattle}
-                    className="w-full py-4 rounded-2xl bg-linear-to-br from-crimson to-ruby text-white font-black text-base tracking-wide transition-all duration-200 shadow-lg shadow-crimson/25 hover:shadow-crimson/40 hover:-translate-y-0.5 flex items-center justify-center gap-3"
-                >
-                    <Swords className="w-5 h-5" />
-                    Choose Your Team
-                    <Swords className="w-5 h-5" />
-                </button>
+                <div className="text-center py-6">
+                    <sakuga-button onClick={handleStartBattle}>Choose Your Team</sakuga-button>
+                </div>
 
             </div>
         </div>

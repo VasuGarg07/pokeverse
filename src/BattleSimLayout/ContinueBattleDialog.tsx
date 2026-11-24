@@ -1,4 +1,4 @@
-import { useModal } from '../lib/ui';
+import { Button, useModal } from '../lib/ui';
 import { resetBattle } from '../store/battleSlice';
 import { useAppDispatch, useAppSelector } from '../store/useRedux';
 
@@ -92,20 +92,8 @@ export default function ContinueBattleDialog({ onContinue }: ContinueBattleDialo
             </div>
 
             <div className="flex gap-3">
-                <button
-                    type="button"
-                    onClick={handleNewBattle}
-                    className="flex-1 px-4 py-2.5 text-sm font-bold rounded-xl bg-linear-to-br from-chalk to-silver/20 border border-silver/50 text-smoke hover:to-silver/40 hover:text-shadow transition-all duration-200"
-                >
-                    New Battle
-                </button>
-                <button
-                    type="button"
-                    onClick={handleContinue}
-                    className="flex-1 px-4 py-2.5 text-sm font-bold rounded-xl bg-linear-to-br from-crimson to-ruby text-white hover:from-ruby hover:to-crimson transition-all duration-200 shadow-sm shadow-crimson/20"
-                >
-                    Continue →
-                </button>
+                <Button tone="paper" className="flex-1" onClick={handleNewBattle}>New Battle</Button>
+                <Button tone="crimson" className="flex-1" onClick={handleContinue}>Continue</Button>
             </div>
         </div>
     );
