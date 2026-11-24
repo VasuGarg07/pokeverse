@@ -13,8 +13,8 @@ interface FighterProps {
 }
 
 const SIDES = [
-    'left-[1%] sm:left-[6%] lg:left-[14%] bottom-[4%] w-[49%] sm:w-[40%] lg:w-auto lg:h-[86%]',
-    'right-[1%] sm:right-[6%] lg:right-[14%] bottom-[24%] w-[44%] sm:w-[34%] lg:w-auto lg:h-[70%]',
+    'left-[1%] sm:left-[6%] lg:left-[14%] bottom-[4%] w-[49%] sm:w-[40%] lg:w-auto lg:h-[86%] lg:max-h-112',
+    'right-[1%] sm:right-[6%] lg:right-[14%] bottom-[24%] w-[44%] sm:w-[34%] lg:w-auto lg:h-[70%] lg:max-h-92',
 ];
 
 export function Fighter({ pokemon, side, isLeaving, isWinner }: FighterProps) {

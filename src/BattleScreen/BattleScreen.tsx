@@ -122,7 +122,7 @@ export default function BattleScreen() {
     );
 
     return (
-        <div className="flex-1 w-full max-w-7xl mx-auto px-3 md:px-6 pt-3 pb-4 lg:h-[calc(100dvh-3.5rem)] lg:min-h-[34rem] lg:flex-none flex flex-col">
+        <div className="flex-1 w-full max-w-[96rem] mx-auto px-3 md:px-6 pt-3 pb-4 lg:h-[calc(100dvh-3.5rem)] lg:min-h-[34rem] lg:flex-none flex flex-col">
             <h1 className="sr-only">Battle</h1>
 
             <div className="relative z-1 grid grid-cols-2">
