@@ -49,7 +49,7 @@ export function BattlePanel() {
                 <div className="focus-lines absolute inset-0 [--at:50%_62%] [--clear:4rem] [--line:#ffffff55]" />
                 <img src={getHomeSprite(257)} alt="" className={`absolute left-[3%] md:left-[10%] bottom-2 w-36 md:w-48 -scale-x-100 ${lunge}`} />
                 <img src={getHomeSprite(448)} alt="" className={`absolute right-[3%] bottom-2 w-36 md:w-48 ${lunge}`} />
-                <div className="absolute left-5 top-12 md:left-20 md:top-14">
+                <div className="absolute inset-x-5 top-12 md:right-auto md:left-20 md:top-14">
                     <h2 className="lettering text-5xl md:text-6xl">Battle</h2>
                     <p className="mt-3 inline-block bg-white border-3 border-shadow px-3 py-1 font-bold">
                         Draft a team. Fight turn by turn.

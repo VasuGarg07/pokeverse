@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, Link, Navigate, NavLink, Outlet, ScrollRestoration, useNavigate, useLocation } from 'react-router';
 import { Provider } from 'react-redux';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ModalProvider } from './lib/ui';
+import { ModalProvider, PokeBall } from './lib/ui';
 import { queryClient } from './lib/shared';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen, Swords } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, XIcon } from './lib/ui';
 import { store } from './store/store';
 import Pokeverse from './Pokeverse';
@@ -23,8 +23,8 @@ const SOCIALS = [
 ];
 
 const SECTIONS = [
-    { path: '/pokedex', label: 'Pokédex', paper: '#D3E3C8' },
-    { path: '/battle-sim', label: 'Battle', paper: '#F1E1B0' },
+    { path: '/pokedex', label: 'Pokédex', icon: BookOpen, cut: 'nav-dex', paper: '#D3E3C8' },
+    { path: '/battle-sim', label: 'Battle', icon: Swords, cut: 'nav-battle', paper: '#F1E1B0' },
 ];
 
 const HOME_PAPER = '#F3D3CC';
@@ -54,18 +54,17 @@ function AppLayout() {
                         <ArrowLeft size={20} strokeWidth={3} />
                     </button>
                 )}
-                <Link to="/" data-press="browse" className="flex items-center min-h-11 font-display text-lg md:text-2xl">
-                    <span className="text-crimson">Poké</span>verse
+                <Link to="/" data-press="browse" aria-label="Pokéverse home" className="flex items-center min-w-11 min-h-11 font-display text-lg md:text-2xl">
+                    {pathname !== '/' && <PokeBall className="sm:hidden w-8 h-8" />}
+                    <span className={pathname !== '/' ? 'hidden sm:inline' : ''}><span className="text-crimson">Poké</span>verse</span>
                 </Link>
-                <nav className="ml-auto flex">
-                    {SECTIONS.map(({ path, label }) => (
-                        <NavLink
-                            key={path}
-                            to={path}
-                            data-press="browse"
-                            className={({ isActive }) => `grid place-items-center min-h-11 px-3 md:px-5 font-display text-sm md:text-base ${isActive ? 'bg-shadow text-white' : 'hover:text-crimson'}`}
-                        >
-                            {label}
+                <nav className="ml-auto flex self-stretch -mr-3 md:-mr-6">
+                    {SECTIONS.map(({ path, label, icon: Icon, cut }) => (
+                        <NavLink key={path} to={path} data-press="browse" className={`nav-panel slant ${cut}`}>
+                            <span className="sheet flex items-center justify-center gap-2">
+                                <Icon className="hidden sm:block w-5 h-5" strokeWidth={2.75} />
+                                {label}
+                            </span>
                         </NavLink>
                     ))}
                 </nav>

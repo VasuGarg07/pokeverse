@@ -6,6 +6,7 @@ import { RegionShelf } from './Home/RegionShelf';
 import { getOfficialSprite, TYPE_COLORS } from './helpers/constants';
 import { formatPokemonId } from './helpers/utilities';
 import { fx } from './lib/sakuga';
+import { PokeBall } from './lib/ui';
 
 const FEATURED = [
     { id: 6, name: 'Charizard', type: 'fire' },
@@ -65,7 +66,7 @@ function Hero() {
                     />
                 </Link>
 
-                <div className="absolute inset-y-0 left-5 md:left-12 pt-7 pb-5 md:pt-10 md:pb-6 flex flex-col justify-between items-start gap-4 pointer-events-none">
+                <div className="absolute inset-y-0 inset-x-5 md:right-auto md:left-12 pt-7 pb-5 md:pt-10 md:pb-6 flex flex-col justify-between items-start gap-4 pointer-events-none">
                     <div>
                         <h1 className="lettering -rotate-4 leading-[0.95] text-[clamp(3.6rem,min(11.5vw,15vh),9.5rem)]">
                             <span className="text-crimson">Poké</span>
@@ -80,11 +81,9 @@ function Hero() {
                         data-press="browse"
                         onClick={throwBall}
                         aria-label="Throw the Poké Ball to call another Pokémon"
-                        className="pointer-events-auto relative shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-full border-5 border-shadow overflow-hidden cursor-pointer bg-white hover:rotate-12"
+                        className="pointer-events-auto relative shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-full cursor-pointer hover:rotate-12"
                     >
-                        <span className="absolute inset-x-0 top-0 h-1/2 bg-crimson" />
-                        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1.5 bg-shadow" />
-                        <span className="absolute left-1/2 top-1/2 -translate-1/2 w-8 h-8 rounded-full bg-white border-5 border-shadow" />
+                        <PokeBall className="w-full h-full" />
                     </button>
                 </div>
 

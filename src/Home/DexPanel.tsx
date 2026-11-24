@@ -58,7 +58,7 @@ export function DexPanel() {
                         />
                     ))}
                 </div>
-                <div className="absolute left-5 top-12 md:left-8 md:top-24">
+                <div className="absolute inset-x-5 top-12 md:right-auto md:left-8 md:top-24">
                     <h2 className="lettering text-5xl md:text-6xl">Pokédex</h2>
                     <p className="mt-3 inline-block bg-white border-3 border-shadow px-3 py-1 font-bold">
                         {TOTAL_POKEMON.toLocaleString('en')} Pokémon. Full stats &amp; evolutions.

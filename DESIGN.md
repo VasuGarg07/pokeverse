@@ -10,6 +10,9 @@ Pokéverse is printed like a weekly manga magazine: ink on tinted newsprint, pan
 - **Colour:** ink, white, the paper tint and one accent, crimson. Azure means Player 2 or the Pokédex. Pokémon type colours stay as they are.
 - **Regions are volumes:** each region is a thick book spine, I to IX, all the same size with the last Pokémon of the region, packed like a bookshelf on the footer's crimson edge.
 
+- **Pokédex:** the paper takes the colour of the chosen region. Regions are slanted panels; the chosen one opens wide. The first card is a splash panel, and art slightly breaks its frame.
+- **Header:** the two sections are slanted panels that bleed off the corner and fill with their colour on hover and when active.
+
 ## Effect levels
 Add `data-press` to any button or link. `src/lib/press.ts` does the rest.
 
@@ -26,7 +29,7 @@ Attacks in battle get their own effects. They are the loudest thing on the site.
 - At most one sound word per reaction.
 - Effects decorate, they never carry information. Everything works with reduced motion on.
 - Things leave by shrinking, not fading.
-- Phone first: 44px targets and no sideways scroll.
+- **Every screen fully works on small screens, from 320px up. No exceptions.** 44px targets, no page that scrolls sideways, no cut-off text.
 
 ## Components
 - **Ready-made (`public/sakuga-vfx`, unmodified):** button for the main action on a screen, slider for team size, tooltip for the footer links (`pv-link-tip` turns it into a link, with two small puffs and no sound word).
