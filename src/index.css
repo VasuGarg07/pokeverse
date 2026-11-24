@@ -59,6 +59,11 @@ sakuga-button::part(button) {
   color: #FFFFFF;
 }
 
+sakuga-button[variant="secondary"]::part(button) {
+  background: #FFFFFF;
+  color: #17151F;
+}
+
 sakuga-input {
   --sk-input-width: 100%;
 }
@@ -447,6 +452,41 @@ sakuga-slider {
     line-height: 1;
     pointer-events: none;
   }
+}
+
+.hud-left {
+  --cut: polygon(0 0, 100% 0, calc(100% - 24px) 100%, 0 100%);
+  margin-right: -9px;
+}
+
+.hud-right {
+  --cut: polygon(24px 0, 100% 0, 100% 100%, 0 100%);
+  margin-left: -9px;
+}
+
+.battle-stage {
+  --cut: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%);
+  margin-top: 6px;
+}
+
+@keyframes ko {
+  0%   { transform: none; }
+  30%  { transform: scale(1.14, 0.8); }
+  60%  { transform: translateY(-6%) rotate(8deg) scale(0.8, 1.1); }
+  100% { transform: translateY(4%) rotate(14deg) scale(0); }
+}
+
+@keyframes damage {
+  0%   { transform: scale(0.2); }
+  18%  { transform: translateY(-20%) scale(1.35); }
+  30%  { transform: translateY(-20%) scale(1); }
+  75%  { transform: translateY(-34%) scale(1); }
+  100% { transform: translateY(-44%) scale(0); }
+}
+
+@keyframes rush {
+  from { transform: scale(1.5); }
+  to   { transform: scale(1); }
 }
 
 @keyframes bar-in {

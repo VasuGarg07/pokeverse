@@ -14,6 +14,7 @@ Pokéverse is printed like a weekly manga magazine: ink on tinted newsprint, pan
 - **Details:** the paper takes the Pokémon's type colour. Pressing the art plays an effect for its type (`src/lib/typeEffects.ts`). Pokédex entries are speech bubbles, and facts are ink grids.
 - **Battle setup:** Player 1 (crimson) against Player 2 (cobalt) in slanted panels, the team size is shown in Poké Balls, and a picked difficulty or region fills with its colour. Picked regions get a Poké Ball, like a caught Pokémon.
 - **Team selection and loading:** hidden teams are trays of Poké Balls. Opening one, or a Pokémon finishing loading, pops it out of its ball.
+- **Battle:** HP panels like a fighting game over one big stage in a flat terrain. Attacks play in beats (`src/BattleScreen/attackScene.ts`): physical moves lunge, special moves travel, then a black-and-white impact frame, the type's effect and the damage in lettering.
 - **Header:** the two sections are slanted panels that bleed off the corner and fill with their colour on hover and when active.
 
 ## Effect levels
