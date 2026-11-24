@@ -3,6 +3,7 @@ import type { ButtonHTMLAttributes } from 'react';
 const TONES = {
     ink: 'bg-shadow text-white hover:bg-crimson',
     crimson: 'bg-crimson text-white hover:bg-shadow',
+    cobalt: 'bg-cobalt text-white hover:bg-shadow',
     paper: 'bg-white text-shadow hover:bg-shadow hover:text-white',
 };
 
