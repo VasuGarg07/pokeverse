@@ -21,6 +21,8 @@ interface SakugaFX {
     burst: Effect<{ r?: number; spikes?: number; life?: number }>;
     shards: Effect<{ n?: number; speed?: number; size?: number; life?: number; arc?: number; grav?: number }>;
     ring: Effect<{ rx?: number; ry?: number; life?: number; w?: number }>;
+    splash: Effect<{ w?: number; h?: number; life?: number }>;
+    donut: Effect<{ r?: number; vx?: number; vy?: number; life?: number }>;
     slash: Effect<{ len?: number; ang?: number; life?: number; thick?: number; col?: string }>;
     lines: Effect<{ n?: number; dir?: number; len?: number; spread?: number; life?: number }>;
     kira: Effect<{ r?: number; life?: number; col?: string }>;

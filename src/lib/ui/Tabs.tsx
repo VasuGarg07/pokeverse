@@ -9,7 +9,7 @@ interface TabsProps {
 
 export function Tabs({ label, tabs, active, onChange }: TabsProps) {
     return (
-        <div role="tablist" aria-label={label} className="flex gap-1.5 overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div role="tablist" aria-label={label} className="flex overflow-x-auto py-2 [scrollbar-width:none]">
             {tabs.map(({ id, label, icon: Icon }) => (
                 <button
                     key={id}
@@ -21,13 +21,12 @@ export function Tabs({ label, tabs, active, onChange }: TabsProps) {
                         onChange(id);
                         event.currentTarget.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
                     }}
-                    className={`flex items-center gap-1.5 min-h-11 px-3.5 border-3 text-sm font-bold whitespace-nowrap shrink-0 cursor-pointer ${id === active
-                        ? 'bg-shadow border-shadow text-white'
-                        : 'bg-white border-transparent text-smoke hover:border-shadow hover:text-shadow'
-                    }`}
+                    className="tab-panel slant slant-flow shrink-0 cursor-pointer"
                 >
-                    <Icon className="w-4 h-4" />
-                    {label}
+                    <span className={`sheet flex items-center gap-2 h-10 px-6 text-sm font-bold whitespace-nowrap ${id === active ? 'bg-crimson text-white' : 'bg-white text-shadow hover:bg-shadow hover:text-white'}`}>
+                        <Icon className="w-4 h-4" strokeWidth={2.5} />
+                        {label}
+                    </span>
                 </button>
             ))}
         </div>

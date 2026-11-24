@@ -56,6 +56,15 @@ sakuga-button::part(button) {
   color: #FFFFFF;
 }
 
+sakuga-input {
+  --sk-input-width: 100%;
+}
+
+sakuga-input::part(input) {
+  font-family: var(--font-sans);
+  min-height: 3rem;
+}
+
 sakuga-slider {
   display: block;
   margin-top: 2.75rem;
@@ -87,6 +96,91 @@ sakuga-slider {
   position: absolute;
   inset: 4px;
   overflow: hidden;
+}
+
+.slant-flow {
+  padding: 3px;
+}
+
+.slant-flow > .sheet {
+  position: relative;
+  inset: auto;
+}
+
+.panel {
+  border: 3px solid #17151F;
+  background: #FFFFFF;
+}
+
+.ink-grid {
+  display: grid;
+  gap: 3px;
+  border: 3px solid #17151F;
+  background: #17151F;
+}
+
+.ink-grid > * {
+  background: #FFFFFF;
+}
+
+.tab-panel {
+  --cut: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  margin-left: -9px;
+}
+
+.tab-panel:first-child {
+  margin-left: 0;
+}
+
+.hero-name {
+  --room: calc(100vw - 5rem);
+  font-size: min(var(--room) / (var(--longest) * 0.84), 15rem / (var(--lines) + 1.2), 6.5rem);
+  line-height: 1.02;
+}
+
+@media (min-width: 768px) {
+  .hero-name {
+    --room: min(45vw, 35rem);
+    font-size: min(var(--room) / (var(--longest) * 0.84), 19rem / (var(--lines) + 0.6), 6.5rem);
+  }
+}
+
+.speech {
+  position: relative;
+  border: 3px solid #17151F;
+  border-radius: 2rem;
+  background: #FFFFFF;
+}
+
+.speech::before,
+.speech::after {
+  content: '';
+  position: absolute;
+  left: 2.5rem;
+  top: 100%;
+  width: 30px;
+  height: 24px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  background: #17151F;
+}
+
+.speech::after {
+  left: calc(2.5rem + 3px);
+  top: calc(100% - 3px);
+  width: 22px;
+  height: 18px;
+  background: #FFFFFF;
+}
+
+.speech-right::before,
+.speech-right::after {
+  left: auto;
+  right: 2.5rem;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.speech-right::after {
+  right: calc(2.5rem + 3px);
 }
 
 .spread {
@@ -234,6 +328,14 @@ sakuga-slider {
 
 .region-panel:last-child {
   --cut: polygon(20px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+@keyframes bar-in {
+  from { transform: scaleX(0); }
+}
+
+@keyframes section-in {
+  from { transform: translateY(18px); }
 }
 
 @keyframes launch {

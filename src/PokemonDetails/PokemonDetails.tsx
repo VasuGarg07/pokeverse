@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { DETAIL_TABS } from '../helpers/constants';
-import { Tabs } from '../lib/ui';
+import { DETAIL_TABS, TYPE_COLORS } from '../helpers/constants';
+import { BackToTop, Button, PokeBall, Tabs } from '../lib/ui';
 import { usePokemon } from '../hooks/usePokemon';
 import HeroSection from './HeroSection';
 import InfoSection from './InfoSection';
@@ -11,6 +11,16 @@ import MovesGrid from './MovesGrid';
 import EvolutionChain from './EvolutionChain';
 import VarietiesSection from './VarietiesSection';
 import StatsSection from './StatsSection';
+
+const SECTIONS: Record<string, typeof InfoSection> = {
+    info: InfoSection,
+    entries: EntriesSection,
+    moves: MovesGrid,
+    stats: StatsSection,
+    evolution: EvolutionChain,
+    varieties: VarietiesSection,
+    gallery: GallerySection,
+};
 
 export default function PokemonDetails() {
     const { id } = useParams<{ id: string }>();
@@ -22,54 +32,43 @@ export default function PokemonDetails() {
 
     if (isLoading) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-chalk py-20">
-                <div className="text-center space-y-4">
-                    <div className="w-14 h-14 border-4 border-silver border-t-crimson rounded-full animate-spin mx-auto" />
-                    <p className="text-sm font-medium text-smoke">Loading Pokémon...</p>
-                </div>
+            <div role="status" className="flex-1 grid place-content-center justify-items-center gap-3 py-20 font-bold">
+                <PokeBall className="w-20 h-20 animate-[ball-wobble_1.2s_ease-in-out_infinite]" />
+                Loading Pokémon
             </div>
         );
     }
 
     if (error || !pokemon) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-chalk p-8">
-                <div className="text-center space-y-4 max-w-sm">
-                    <div className="w-16 h-16 rounded-full bg-crimson/10 flex items-center justify-center mx-auto">
-                        <span className="text-3xl">😞</span>
-                    </div>
-                    <h2 className="text-xl font-black text-shadow">Pokémon Not Found</h2>
-                    <p className="text-sm text-smoke">Could not load Pokémon data. Please try again.</p>
-                    <button
-                        onClick={() => navigate('/pokedex')}
-                        className="px-5 py-2.5 bg-crimson hover:bg-ruby text-white text-sm font-bold rounded-lg transition-all duration-200"
-                    >
-                        Back to Pokédex
-                    </button>
-                </div>
+            <div className="flex-1 grid place-content-center justify-items-center gap-4 p-6 text-center">
+                <h1 className="font-display text-2xl">That Pokémon did not load</h1>
+                <p>Check the number in the address or your connection, then try again.</p>
+                <Button tone="crimson" onClick={() => navigate('/pokedex')}>Back to Pokédex</Button>
             </div>
         );
     }
 
-    return (
-        <div className="flex-1 flex flex-col bg-chalk">
-            <HeroSection pokemon={pokemon} />
+    const color = TYPE_COLORS[pokemon.types[0]];
+    const Section = SECTIONS[activeTab];
 
-            <div className="sticky top-14 z-10 bg-white border-y-3 border-shadow">
-                <div className="max-w-4xl mx-auto px-3">
+    return (
+        <div className="flex-1" style={{ background: `color-mix(in srgb, ${color} 30%, white)`, '--line': color } as CSSProperties}>
+            <div className="max-w-7xl mx-auto px-3 md:px-6 pt-4 md:pt-6">
+                <HeroSection pokemon={pokemon} />
+            </div>
+
+            <div className="sticky top-14 z-10 mt-5 bg-white border-y-3 border-shadow">
+                <div className="max-w-5xl mx-auto px-3 md:px-6">
                     <Tabs label="Pokémon details" tabs={DETAIL_TABS} active={activeTab} onChange={setActiveTab} />
                 </div>
             </div>
 
-            <div className="max-w-4xl mx-auto w-full px-4 py-6">
-                {activeTab === 'info' && <InfoSection pokemon={pokemon} />}
-                {activeTab === 'entries' && <EntriesSection pokemon={pokemon} />}
-                {activeTab === 'moves' && <MovesGrid pokemon={pokemon} />}
-                {activeTab === 'stats' && <StatsSection pokemon={pokemon} />}
-                {activeTab === 'evolution' && <EvolutionChain pokemon={pokemon} />}
-                {activeTab === 'varieties' && <VarietiesSection pokemon={pokemon} />}
-                {activeTab === 'gallery' && <GallerySection pokemon={pokemon} />}
+            <div key={`${pokemon.id}-${activeTab}`} role="tabpanel" className="max-w-5xl mx-auto px-3 md:px-6 pt-6 pb-12 animate-[section-in_0.22s_ease-out]">
+                <Section pokemon={pokemon} />
             </div>
+
+            <BackToTop />
         </div>
     );
 }
