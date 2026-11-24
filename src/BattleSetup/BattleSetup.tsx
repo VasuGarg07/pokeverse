@@ -1,5 +1,4 @@
-import { Crown, Flame, Swords, Trophy, Zap } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
     proceedToTeamSelection,
@@ -10,33 +9,20 @@ import {
     setTeamSize,
 } from '../store/battleSlice';
 import { useAppDispatch } from '../store/useRedux';
-import { Slider, TextInput } from '../lib/ui';
-import { DIFFICULTY_LEVELS, REGIONS } from '../helpers/constants';
+import { Button, PokeBall, Slider } from '../lib/ui';
+import { DIFFICULTY_LEVELS, REGION_COLORS, REGIONS } from '../helpers/constants';
 import type { DifficultyId } from '../helpers/types';
+import { PickPanel } from './PickPanel';
+import { TrainerPanel } from './TrainerPanel';
 
-const difficultyIcons = {
-    beginner: Flame,
-    intermediate: Zap,
-    advanced: Trophy,
-    master: Crown,
+const MAX_TEAM_SIZE = 15;
+
+const DIFFICULTY_ART: Record<DifficultyId, { pokemonId: number; color: string }> = {
+    beginner: { pokemonId: 4, color: '#F2C14B' },
+    intermediate: { pokemonId: 5, color: '#F59B45' },
+    advanced: { pokemonId: 6, color: '#F26A5A' },
+    master: { pokemonId: 10035, color: '#17151F' },
 };
-
-const difficultyAccent: Record<DifficultyId, { border: string; bg: string; icon: string; level: string }> = {
-    beginner:     { border: 'border-green-500',  bg: 'bg-green-500/10',  icon: 'bg-green-500',  level: 'text-green-400' },
-    intermediate: { border: 'border-azure',       bg: 'bg-azure/10',      icon: 'bg-azure',      level: 'text-azure' },
-    advanced:     { border: 'border-orange-400',  bg: 'bg-orange-400/10', icon: 'bg-orange-400', level: 'text-orange-400' },
-    master:       { border: 'border-crimson',     bg: 'bg-crimson/10',    icon: 'bg-crimson',    level: 'text-crimson' },
-};
-
-
-function Card({ label, children }: { label: string; children: React.ReactNode }) {
-    return (
-        <div className="rounded-2xl bg-white border border-silver/40 p-5 shadow-sm">
-            <p className="text-[10px] font-black uppercase tracking-widest text-smoke border-b border-silver/30 pb-3 mb-4">{label}</p>
-            {children}
-        </div>
-    );
-}
 
 export default function BattleSetup() {
     const navigate = useNavigate();
@@ -47,7 +33,7 @@ export default function BattleSetup() {
     const [teamSize, setTeamSizeLocal] = useState(6);
     const [selectedRegions, setSelectedRegionsLocal] = useState<string[]>([]);
     const [difficulty, setDifficultyLocal] = useState<DifficultyId>('intermediate');
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [attempts, setAttempts] = useState(0);
 
     const toggleRegion = (regionName: string) => {
         setSelectedRegionsLocal(prev =>
@@ -58,17 +44,15 @@ export default function BattleSetup() {
     const selectAllRegions = () => setSelectedRegionsLocal(REGIONS.map(r => r.name.toLowerCase()));
     const clearAllRegions = () => setSelectedRegionsLocal([]);
 
-    const validate = (): boolean => {
-        const newErrors: Record<string, string> = {};
-        if (!player1Name.trim()) newErrors.player1 = 'Required';
-        if (!player2Name.trim()) newErrors.player2 = 'Required';
-        if (selectedRegions.length === 0) newErrors.regions = 'Select at least one region';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    const problems: Record<string, string> = {};
+    if (!player1Name.trim()) problems.player1 = 'Required';
+    if (!player2Name.trim()) problems.player2 = 'Required';
+    if (selectedRegions.length === 0) problems.regions = 'Select at least one region';
+    const errors = attempts > 0 ? problems : {};
 
     const handleStartBattle = () => {
-        if (!validate()) return;
+        setAttempts(attempts + 1);
+        if (Object.keys(problems).length > 0) return;
         dispatch(setPlayerNames({ player1: player1Name, player2: player2Name }));
         dispatch(setTeamSize(teamSize));
         dispatch(setSelectedRegions(selectedRegions));
@@ -78,139 +62,86 @@ export default function BattleSetup() {
         navigate('/battle-sim/team-selection');
     };
 
-    return (
-        <div className="flex-1 bg-chalk py-10 px-4">
-            <div className="max-w-2xl mx-auto space-y-5">
+    useEffect(() => {
+        document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+    }, [attempts]);
 
-                {/* Header */}
-                <div className="flex items-center gap-4 pb-2">
-                    <div className="w-12 h-12 rounded-2xl bg-crimson flex items-center justify-center shadow-lg shadow-crimson/30 shrink-0">
-                        <Swords className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-black text-shadow tracking-tight leading-none">Battle Arena</h1>
-                        <p className="text-sm text-smoke mt-0.5"> Prepare for an epic showdown!</p>
+    return (
+        <div className="flex-1 w-full max-w-7xl mx-auto px-3 md:px-6 pt-4 md:pt-6 pb-20 space-y-6 md:space-y-8 overflow-x-clip">
+            <h1 className="sr-only">Battle setup</h1>
+
+            <div className="versus">
+                <TrainerPanel player={1} name={player1Name} error={errors.player1} onChange={setPlayer1Name} />
+                <TrainerPanel player={2} name={player2Name} error={errors.player2} onChange={setPlayer2Name} />
+                <span className="versus-mark lettering" aria-hidden="true">VS</span>
+            </div>
+
+            <div className="panel p-4 md:px-8">
+                <Slider
+                    label="Pokémon per team"
+                    value={teamSize}
+                    min={1}
+                    max={MAX_TEAM_SIZE}
+                    step={1}
+                    onChange={setTeamSizeLocal}
+                />
+                <div className="mt-2 grid grid-cols-[repeat(15,1fr)] justify-items-center gap-0.5" aria-hidden="true">
+                    {Array.from({ length: MAX_TEAM_SIZE }, (_, index) => index < teamSize
+                        ? <PokeBall key={index} className="w-full max-w-10 animate-[pop-out_0.3s_ease-out]" />
+                        : <span key={index} className="w-full max-w-10 aspect-square rounded-full border-2 border-dashed border-silver" />
+                    )}
+                </div>
+            </div>
+
+            <div role="group" aria-label="Difficulty" className="grid grid-cols-2 gap-y-1.5 md:flex">
+                {DIFFICULTY_LEVELS.map(({ id, label, level }) => (
+                    <PickPanel
+                        key={id}
+                        name={label}
+                        note={`Level ${level}`}
+                        {...DIFFICULTY_ART[id]}
+                        isSelected={id === difficulty}
+                        onPick={() => setDifficultyLocal(id)}
+                        className={`h-40 sm:h-48 md:h-60 md:basis-0 max-md:odd:[--l:0px] max-md:even:[--r:0px] md:first:[--l:0px] md:last:[--r:0px] ${id === difficulty ? 'md:grow-[1.5]' : 'md:grow'}`}
+                        nameClassName={id === difficulty ? 'text-sm xs:text-lg md:text-2xl lg:text-4xl' : 'text-sm sm:max-md:text-lg lg:text-lg'}
+                    />
+                ))}
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+                    <p className="font-bold">Pick the regions your Pokémon come from</p>
+                    <div className="flex gap-2">
+                        <Button tone="paper" onClick={selectAllRegions}>All</Button>
+                        <Button tone="paper" onClick={clearAllRegions}>None</Button>
                     </div>
                 </div>
+                <div role="group" aria-label="Regions" aria-describedby={errors.regions && 'regions-error'} className="grid grid-cols-3 lg:grid-cols-9 gap-y-1.5">
+                    {REGIONS.map((region) => {
+                        const id = region.name.toLowerCase();
+                        const isSelected = selectedRegions.includes(id);
+                        return (
+                            <PickPanel
+                                key={id}
+                                name={region.name}
+                                note={`Gen ${region.generation}`}
+                                color={REGION_COLORS[region.name]}
+                                pokemonId={region.endId}
+                                isSelected={isSelected}
+                                onPick={() => toggleRegion(id)}
+                                className="h-36 md:h-44 max-lg:nth-[3n+1]:[--l:0px] max-lg:nth-[3n]:[--r:0px] lg:first:[--l:0px] lg:last:[--r:0px]"
+                                nameClassName="text-sm sm:text-base"
+                            >
+                                {isSelected && <PokeBall className="absolute left-3 bottom-9 sm:bottom-10 w-6 sm:w-8 animate-[pop-out_0.35s_ease-out]" />}
+                            </PickPanel>
+                        );
+                    })}
+                </div>
+                {errors.regions && <p id="regions-error" role="alert" className="inline-block bg-white border-3 border-shadow px-2 py-0.5 font-bold text-crimson">{errors.regions}</p>}
+            </div>
 
-                {/* Players */}
-                <Card label="Trainers">
-                    <div className="grid grid-cols-1 xs:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <p className="text-xs font-black text-crimson uppercase tracking-wide">Player 1</p>
-                            <TextInput
-                                label=""
-                                value={player1Name}
-                                onChange={(e) => setPlayer1Name(e.target.value)}
-                                placeholder="Trainer name"
-                                error={errors.player1}
-                            />
-                        </div>
-                        <div className="space-y-1.5">
-                            <p className="text-xs font-black text-azure uppercase tracking-wide">Player 2</p>
-                            <TextInput
-                                label=""
-                                value={player2Name}
-                                onChange={(e) => setPlayer2Name(e.target.value)}
-                                placeholder="Trainer name"
-                                error={errors.player2}
-                            />
-                        </div>
-                    </div>
-                </Card>
-
-                {/* Team Size */}
-                <Card label="Team Size">
-                    <Slider
-                        label="Pokémon per team"
-                        value={teamSize}
-                        min={1}
-                        max={15}
-                        step={1}
-                        onChange={setTeamSizeLocal}
-                    />
-                    <p className="mt-3 text-xs text-smoke italic text-center">Our battle will be legendary!</p>
-                </Card>
-
-                {/* Difficulty */}
-                <Card label="Difficulty">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-                        {DIFFICULTY_LEVELS.map((diff) => {
-                            const Icon = difficultyIcons[diff.id];
-                            const isSelected = difficulty === diff.id;
-                            const accent = difficultyAccent[diff.id];
-                            return (
-                                <button
-                                    key={diff.id}
-                                    onClick={() => setDifficultyLocal(diff.id)}
-                                    className={`flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 transition-all duration-200 ${isSelected
-                                        ? `${accent.border} ${accent.bg}`
-                                        : 'border-silver/50 hover:border-silver/60'
-                                    }`}
-                                >
-                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${isSelected ? accent.icon : 'bg-silver/20'}`}>
-                                        <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-smoke'}`} />
-                                    </div>
-                                    <div className="text-center">
-                                        <p className="text-xs font-black text-shadow">{diff.label}</p>
-                                        <p className={`text-[10px] font-bold mt-0.5 ${isSelected ? accent.level : 'text-silver'}`}>Lv {diff.level}</p>
-                                    </div>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </Card>
-
-                {/* Regions */}
-                <Card label="Battle Regions">
-                    <div className="flex items-center justify-between mb-3">
-                        <p className="text-xs text-smoke">Which Pokémon generations to pull from</p>
-                        <div className="flex items-center gap-3">
-                            <button onClick={selectAllRegions} className="text-xs font-black text-azure hover:text-cobalt transition-colors">All</button>
-                            <span className="text-silver/30">|</span>
-                            <button onClick={clearAllRegions} className="text-xs font-black text-smoke hover:text-shadow transition-colors">None</button>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {REGIONS.map((region) => {
-                            const isSelected = selectedRegions.includes(region.name.toLowerCase());
-                            return (
-                                <button
-                                    key={region.name}
-                                    onClick={() => toggleRegion(region.name.toLowerCase())}
-                                    className={`relative p-3 rounded-xl border-2 text-left transition-all duration-200 ${isSelected
-                                        ? 'border-crimson bg-crimson/10'
-                                        : 'border-silver/30 hover:border-silver/60'
-                                    }`}
-                                >
-                                    {isSelected && (
-                                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-crimson flex items-center justify-center">
-                                            <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                    )}
-                                    <p className="text-sm font-black text-shadow pr-5">{region.name}</p>
-                                    <p className="text-[10px] text-smoke mt-0.5 font-medium">Gen {region.generation} · {region.endId - region.startId + 1} Pokémon</p>
-                                </button>
-                            );
-                        })}
-                    </div>
-                    {errors.regions && (
-                        <p className="mt-3 text-xs text-crimson font-bold">⚠ {errors.regions}</p>
-                    )}
-                </Card>
-
-                {/* CTA */}
-                <button
-                    onClick={handleStartBattle}
-                    className="w-full py-4 rounded-2xl bg-linear-to-br from-crimson to-ruby text-white font-black text-base tracking-wide transition-all duration-200 shadow-lg shadow-crimson/25 hover:shadow-crimson/40 hover:-translate-y-0.5 flex items-center justify-center gap-3"
-                >
-                    <Swords className="w-5 h-5" />
-                    Choose Your Team
-                    <Swords className="w-5 h-5" />
-                </button>
-
+            <div className="text-center pt-2">
+                <sakuga-button onClick={handleStartBattle}>Choose Your Team</sakuga-button>
             </div>
         </div>
     );

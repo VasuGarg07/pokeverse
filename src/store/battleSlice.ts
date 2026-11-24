@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { BattlePokemon, DifficultyId } from '../helpers/types';
-import { calculateDamage, getNextAlivePokemon } from '../helpers/utilities';
+import { calculateDamage, formatString, getNextAlivePokemon } from '../helpers/utilities';
 import { DIFFICULTY_LEVELS } from '../helpers/constants';
 
 type BattlePhase = 'SETUP' | 'TEAM_SELECTION' | 'LOADING' | 'BATTLE' | 'ENDED';
@@ -158,8 +158,8 @@ const battleSlice = createSlice({
                 state.turn = 1;
                 state.currentPlayerTurn = 0;
                 state.battleLog.push(`Battle started between ${state.players[0].name} and ${state.players[1].name}!`);
-                state.battleLog.push(`${state.players[0].name} sent out ${state.players[0].team[0].name}!`);
-                state.battleLog.push(`${state.players[1].name} sent out ${state.players[1].team[0].name}!`);
+                state.battleLog.push(`${state.players[0].name} sent out ${formatString(state.players[0].team[0].name)}!`);
+                state.battleLog.push(`${state.players[1].name} sent out ${formatString(state.players[1].team[0].name)}!`);
             }
         },
 
@@ -183,11 +183,11 @@ const battleSlice = createSlice({
             );
 
             defendingPokemon.currentHP = Math.max(defendingPokemon.currentHP - damage, 0);
-            state.battleLog.push(`${attacker.name}'s ${attackingPokemon.name} used ${move.name}! (${damage} damage)`);
+            state.battleLog.push(`${attacker.name}'s ${formatString(attackingPokemon.name)} used ${formatString(move.name)}! (${damage} damage)`);
             attacker.hasActed = true;
 
             if (defendingPokemon.currentHP <= 0) {
-                state.battleLog.push(`${defender.name}'s ${defendingPokemon.name} fainted!`);
+                state.battleLog.push(`${defender.name}'s ${formatString(defendingPokemon.name)} fainted!`);
                 const nextIndex = getNextAlivePokemon(defender.team);
                 if (nextIndex === undefined) {
                     state.phase = 'ENDED';
@@ -195,7 +195,7 @@ const battleSlice = createSlice({
                     state.battleLog.push(`${attacker.name} wins the battle!`);
                 } else {
                     defender.activePokemon = nextIndex;
-                    state.battleLog.push(`${defender.name} sent out ${defender.team[nextIndex].name}!`);
+                    state.battleLog.push(`${defender.name} sent out ${formatString(defender.team[nextIndex].name)}!`);
                 }
             }
         },
@@ -210,7 +210,7 @@ const battleSlice = createSlice({
                 const oldPokemon = player.team[player.activePokemon];
                 player.activePokemon = index;
                 player.hasActed = true;
-                state.battleLog.push(`${player.name} withdrew ${oldPokemon.name} and sent out ${newPokemon.name}!`);
+                state.battleLog.push(`${player.name} withdrew ${formatString(oldPokemon.name)} and sent out ${formatString(newPokemon.name)}!`);
             }
         },
 

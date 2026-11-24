@@ -40,7 +40,7 @@ export const usePokemon = (id: number) => {
 
     const speciesQuery = useQuery({
         queryKey: ['pokemon-species', id],
-        queryFn: () => fetchPokemonSpecies(id),
+        queryFn: () => fetchPokemonSpecies(getIdFromUrl(detailsQuery.data!.species.url)),
         staleTime: STALE_TIME,
         gcTime: CACHE_TIME,
         enabled: !!detailsQuery.data,
